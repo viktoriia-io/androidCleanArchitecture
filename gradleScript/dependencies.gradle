@@ -1,0 +1,12 @@
+ext {
+    androidx_lifecycle_version = '2.1.0-rc01'
+    androidx_lifecycle_ktx_version = '2.2.0-alpha01'
+    androidx_lifecycle = [
+            runtime         :           "androidx.lifecycle:lifecycle-runtime:$androidx_lifecycle_version",
+            extensions      :           "androidx.lifecycle:lifecycle-extensions:$androidx_lifecycle_version",
+            compiler        :           "androidx.lifecycle:lifecycle-compiler:$androidx_lifecycle_version",
+            livedataKtx     :           "androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_ktx_version",
+            runtimeKtx      :           "androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_ktx_version"
+    ]
+}
+

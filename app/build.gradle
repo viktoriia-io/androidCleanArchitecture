@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply from: '../gradleScript/dependencies_koin.gradle'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    jcenter()
+}
+
+android {
+    /**
+     * Caution: Setting the returnDefaultValues property to true should be done with care.
+     * The null/zero return values can introduce regressions in your tests,
+     * which are hard to debug and might allow failing tests to pass.
+     * Only use it as a last resort.
+     */
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    packagingOptions {
+        pickFirst("META-INF/atomicfu.kotlin_module")
+    }
+
+    android {
+        configurations.all {
+            resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+        }
+
+        configurations {
+            all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+        }
+    }
+}
+
+ext {
+    epoxyVersion = '4.1.0'
+}
+
+dependencies {
+    implementation project(":base")
+    implementation("io.coil-kt:coil:1.1.0")
+
+    implementation "com.airbnb.android:epoxy:$epoxyVersion"
+    kapt "com.airbnb.android:epoxy-processor:$epoxyVersion"
+}

@@ -1,0 +1,15 @@
+def dependencyGroup(Closure closure) {
+    closure.delegate = dependencies
+    return closure
+}
+
+def koin = dependencyGroup {
+    api "org.koin:koin-java:${project.ext.koin}"
+    api "org.koin:koin-android:${project.ext.koin}"
+    api "org.koin:koin-android-scope:${project.ext.koin}"
+    api "org.koin:koin-androidx-viewmodel:${project.ext.koin}"
+}
+
+dependencies {
+    koin()
+}

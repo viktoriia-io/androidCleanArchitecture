@@ -1,0 +1,92 @@
+buildscript {
+    project.apply from: "${rootDir}/gradleScript/constants.gradle"
+
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:${project.ext.gradle}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${project.ext.kotlin}"
+        classpath "org.jacoco:org.jacoco.core:0.8.4"
+        classpath "com.vanniktech:gradle-dependency-graph-generator-plugin:0.5.0"
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
+        classpath "com.google.gms:google-services:4.3.3"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        mavenLocal()
+    }
+
+    project.apply from: "${rootDir}/gradleScript/constants.gradle"
+    project.apply from: "${rootDir}/gradleScript/dependencies.gradle"
+    project.apply plugin: "com.vanniktech.dependency.graph.generator"
+}
+
+subprojects { subproject ->
+    subproject.apply plugin: 'jacoco'
+}
+
+subprojects {
+    afterEvaluate {
+        if (it.hasProperty('android')) {
+            android {
+                defaultConfig {
+                    minSdkVersion project.ext.minSdk
+                    compileSdkVersion project.ext.compileSdk
+                    targetSdkVersion project.ext.targetSdk
+
+                    compileOptions {
+                        sourceCompatibility JavaVersion.VERSION_1_8
+                        targetCompatibility JavaVersion.VERSION_1_8
+                    }
+
+                    kotlinOptions {
+                        jvmTarget = "1.8"
+                    }
+                }
+
+                buildTypes {
+                    debug {
+                        debuggable true
+                    }
+                }
+
+                lintOptions {
+                    abortOnError false
+                }
+            }
+
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${project.ext.kotlin}"
+                // Test
+                testImplementation group: 'org.robolectric', name: 'robolectric', version: '4.3'
+                testImplementation "junit:junit:${project.ext.junit}"
+                testImplementation "org.jetbrains.kotlin:kotlin-test-junit:${project.ext.kotlin}"
+                testImplementation "org.assertj:assertj-core:${project.ext.assertjCore}"
+                testImplementation "io.mockk:mockk:${project.ext.mockk}"
+                testImplementation "io.vertx:vertx-codegen:${project.ext.vertx}"
+                testImplementation "org.koin:koin-test:${project.ext.koin}"
+                testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${project.ext.coroutines}"
+            }
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'org.jetbrains.kotlin' && requested.name == 'kotlin-reflect') {
+            details.useVersion project.ext.kotlin
+        }
+    }
+}

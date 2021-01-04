@@ -1,0 +1,54 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply from: '../gradleScript/dependencies_koin.gradle'
+apply plugin: "androidx.navigation.safeargs"
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.0.0"
+    }
+}
+
+android {
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+}
+
+ext {
+    androidx_navigation_version = '2.3.2'
+}
+
+dependencies {
+    // Anotation parsing
+    api "androidx.annotation:annotation:${project.ext.androidxAnnotation}"
+
+    // Kotlin reflection
+    api "org.jetbrains.kotlin:kotlin-reflect:${project.ext.kotlin}"
+
+    // AndroidX Lifecycle
+    api androidx_lifecycle.runtime
+    api androidx_lifecycle.extensions
+    api androidx_lifecycle.livedataKtx
+    kapt androidx_lifecycle.compiler
+
+    implementation "androidx.appcompat:appcompat:1.2.0"
+
+    // Navigation KTX
+    api "androidx.navigation:navigation-fragment-ktx:$androidx_navigation_version"
+    api "androidx.navigation:navigation-ui-ktx:$androidx_navigation_version"
+    api "androidx.navigation:navigation-runtime-ktx:$androidx_navigation_version"
+
+    def androidx_lifecycle_version = '2.1.0-rc01'
+    def androidx_testrunner_version = '1.1.1'
+    androidTestImplementation "androidx.test:runner:$androidx_testrunner_version"
+    androidTestImplementation 'androidx.appcompat:appcompat:1.0.2'
+    androidTestImplementation "androidx.lifecycle:lifecycle-extensions:${androidx_lifecycle_version}"
+}
